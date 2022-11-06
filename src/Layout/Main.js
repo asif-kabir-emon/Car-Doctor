@@ -5,10 +5,10 @@ import Footer from "../Pages/Shared/Footer/Footer";
 
 const Main = () => {
   return (
-    <div className="relative min-h-screen">
+    <div className="min-h-screen">
       <Header></Header>
       <Outlet></Outlet>
-      <Footer className="absolute inset-x-0 bottom-0"></Footer>
+      <Footer></Footer>
     </div>
   );
 };
