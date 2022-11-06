@@ -2,16 +2,12 @@ import React, { useContext, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import login from "../../assets/images/login/login.svg";
-import {
-  FaFacebookSquare,
-  FaLinkedin,
-  FaGithubSquare,
-  FaGoogle,
-} from "react-icons/fa";
+
 import { AuthContext } from "../../Contexts/AuthProvider/AuthProvider";
+import SocialLogin from "../Shared/SocialLogin/SocialLogin";
 
 const Login = () => {
-  const { logInWithGoogle, logInWithEP } = useContext(AuthContext);
+  const { logInWithEP } = useContext(AuthContext);
   const [errorMessage, setErrorMessage] = useState("");
   const location = useLocation();
   const navigate = useNavigate();
@@ -23,30 +19,31 @@ const Login = () => {
     const password = form.password.value;
 
     logInWithEP(email, password)
-      .then(() => {
+      .then((result) => {
+        const user = result.user;
+        const currentUser = {
+          email: user.email,
+        };
         setErrorMessage("");
-        toast.success("Successfully Logged In");
-        navigate(from, { replace: true });
+        fetch(`https://genius-car-server-beige.vercel.app/jwt`, {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+          },
+          body: JSON.stringify(currentUser),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            console.log(data);
+            localStorage.setItem("token", data.token);
+            toast.success("Successfully Logged In");
+            navigate(from, { replace: true });
+          });
       })
       .catch((error) => {
         setErrorMessage(error.message);
         toast.error("Failed to Logged In");
         console.log(error.message);
-      });
-  };
-
-  const handlGoogleLogin = (event) => {
-    event.preventDefault();
-
-    logInWithGoogle()
-      .then(() => {
-        setErrorMessage("");
-        toast.success("Successfully Logged In");
-        navigate(from, { replace: true });
-      })
-      .catch((error) => {
-        setErrorMessage(error.message);
-        toast.error("Failed to Logged In");
       });
   };
 
@@ -101,18 +98,7 @@ const Login = () => {
               </div>
             </form>
             <p className="text-center mt-4">Or Sign Up with</p>
-            <div className="flex justify-center items-center my-1">
-              <FaFacebookSquare className="text-3xl text-slate-600 mx-1"></FaFacebookSquare>
-              <FaLinkedin className="text-3xl text-slate-600 mx-1"></FaLinkedin>
-              <FaGithubSquare className="text-3xl text-slate-600 mx-1"></FaGithubSquare>
-              <button>
-                <FaGoogle
-                  className="bg-slate-600 text-white p-1 rounded mx-1"
-                  onClick={handlGoogleLogin}
-                  style={{ fontSize: "26px" }}
-                ></FaGoogle>
-              </button>
-            </div>
+            <SocialLogin></SocialLogin>
             <p className="text-center">
               Don't have an account?
               <Link to="/register" className="text-red-600 ml-1">

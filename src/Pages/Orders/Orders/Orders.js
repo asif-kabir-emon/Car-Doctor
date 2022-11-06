@@ -4,14 +4,23 @@ import { AuthContext } from "../../../Contexts/AuthProvider/AuthProvider";
 import OrderRow from "../OrderRow/OrderRow";
 
 const Orders = () => {
-  const { user } = useContext(AuthContext);
+  const { user, logOut } = useContext(AuthContext);
   const [orders, setOrders] = useState([]);
   console.log(user);
   useEffect(() => {
-    fetch(`https://genius-car-server-beige.vercel.app/orders/${user?.email}`)
-      .then((res) => res.json())
+    fetch(`https://genius-car-server-beige.vercel.app/orders/${user?.email}`, {
+      headers: {
+        authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    })
+      .then((res) => {
+        if (res.status === 401 || res.status === 403) {
+          return logOut();
+        }
+        return res.json();
+      })
       .then((data) => setOrders(data));
-  }, [user?.email]);
+  }, [user.email]);
 
   const handleDelete = (id) => {
     const procced = window.confirm("Are you sure, you want to delete order?");

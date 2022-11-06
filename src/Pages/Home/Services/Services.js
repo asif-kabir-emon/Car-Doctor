@@ -12,7 +12,7 @@ const Services = () => {
   return (
     <div className="my-10">
       <div className="text-center">
-        <p className="text-2xl font-bold text-orange-600">Servic</p>
+        <p className="text-2xl font-bold text-orange-600">Services</p>
         <h2 className="text-5xl font-bold my-3">Our Service Area</h2>
         <p>
           the majority have suffered alteration in some form, by injected

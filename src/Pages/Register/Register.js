@@ -1,19 +1,17 @@
 import React, { useContext, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import register from "../../assets/images/login/login.svg";
-import {
-  FaFacebookSquare,
-  FaLinkedin,
-  FaGithubSquare,
-  FaGoogle,
-} from "react-icons/fa";
 import { AuthContext } from "../../Contexts/AuthProvider/AuthProvider";
+import SocialLogin from "../Shared/SocialLogin/SocialLogin";
+import { setAuthToken } from "../../API/Auth";
 
 const Register = () => {
-  const { createUser, updateUserProfile, logInWithGoogle } =
-    useContext(AuthContext);
+  const { createUser, updateUserProfile } = useContext(AuthContext);
   const [errorMessage, setErrorMessage] = useState("");
+  const location = useLocation();
+  const navigate = useNavigate();
+  let from = location.state?.from?.pathname || "/";
   const handleRegister = (event) => {
     event.preventDefault();
     event.preventDefault();
@@ -23,10 +21,12 @@ const Register = () => {
     const password = form.password.value;
 
     createUser(email, password)
-      .then(() => {
+      .then((result) => {
         setErrorMessage("");
         handleUpdateProfile(name);
+        const user = result.user;
         toast.success("Successfully Create Account");
+        setAuthToken(user);
       })
       .catch((error) => {
         setErrorMessage(error.message);
@@ -41,20 +41,6 @@ const Register = () => {
       })
       .catch((error) => {
         setErrorMessage(error.message);
-      });
-  };
-
-  const handlGoogleLogin = (event) => {
-    event.preventDefault();
-
-    logInWithGoogle()
-      .then(() => {
-        setErrorMessage("");
-        toast.success("Successfully Logged In");
-      })
-      .catch((error) => {
-        setErrorMessage(error.message);
-        toast.error("Failed to Logged In");
       });
   };
 
@@ -120,18 +106,7 @@ const Register = () => {
               </div>
             </form>
             <p className="text-center mt-3">Or Sign Up with</p>
-            <div className="flex justify-center items-center my-1">
-              <FaFacebookSquare className="text-3xl text-slate-600 mx-1"></FaFacebookSquare>
-              <FaLinkedin className="text-3xl text-slate-600 mx-1"></FaLinkedin>
-              <FaGithubSquare className="text-3xl text-slate-600 mx-1"></FaGithubSquare>
-              <button>
-                <FaGoogle
-                  className="bg-slate-600 text-white p-1 rounded mx-1"
-                  onClick={handlGoogleLogin}
-                  style={{ fontSize: "26px" }}
-                ></FaGoogle>
-              </button>
-            </div>
+            <SocialLogin></SocialLogin>
             <p className="text-center">
               Already have an account?
               <Link to="/login" className="text-red-500 ml-1">
