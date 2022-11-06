@@ -2,10 +2,12 @@ import React, { useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { AuthContext } from "../../../Contexts/AuthProvider/AuthProvider";
 import OrderRow from "../OrderRow/OrderRow";
+import useTitle from "../../../hooks/useTitle";
 
 const Orders = () => {
   const { user, logOut } = useContext(AuthContext);
   const [orders, setOrders] = useState([]);
+  useTitle("Orders");
   console.log(user);
   useEffect(() => {
     fetch(`https://genius-car-server-beige.vercel.app/orders/${user?.email}`, {

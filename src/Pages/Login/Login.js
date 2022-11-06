@@ -5,6 +5,7 @@ import login from "../../assets/images/login/login.svg";
 
 import { AuthContext } from "../../Contexts/AuthProvider/AuthProvider";
 import SocialLogin from "../Shared/SocialLogin/SocialLogin";
+import useTitle from "../../hooks/useTitle";
 
 const Login = () => {
   const { logInWithEP } = useContext(AuthContext);
@@ -12,6 +13,7 @@ const Login = () => {
   const location = useLocation();
   const navigate = useNavigate();
   let from = location.state?.from?.pathname || "/";
+  useTitle("Login");
   const handleLogin = (event) => {
     event.preventDefault();
     const form = event.target;

@@ -5,6 +5,7 @@ import register from "../../assets/images/login/login.svg";
 import { AuthContext } from "../../Contexts/AuthProvider/AuthProvider";
 import SocialLogin from "../Shared/SocialLogin/SocialLogin";
 import { setAuthToken } from "../../API/Auth";
+import useTitle from "../../hooks/useTitle";
 
 const Register = () => {
   const { createUser, updateUserProfile } = useContext(AuthContext);
@@ -12,6 +13,7 @@ const Register = () => {
   const location = useLocation();
   const navigate = useNavigate();
   let from = location.state?.from?.pathname || "/";
+  useTitle("Register");
   const handleRegister = (event) => {
     event.preventDefault();
     event.preventDefault();
@@ -25,8 +27,9 @@ const Register = () => {
         setErrorMessage("");
         handleUpdateProfile(name);
         const user = result.user;
-        toast.success("Successfully Create Account");
         setAuthToken(user);
+        toast.success("Successfully Create Account");
+        navigate(from, { replace: true });
       })
       .catch((error) => {
         setErrorMessage(error.message);

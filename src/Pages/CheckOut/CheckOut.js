@@ -2,11 +2,13 @@ import React, { useContext } from "react";
 import toast from "react-hot-toast";
 import { useLoaderData, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../Contexts/AuthProvider/AuthProvider";
+import useTitle from "../../hooks/useTitle";
 
 const CheckOut = () => {
   const service = useLoaderData();
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
+  useTitle("Check Out");
 
   const handlePlaceOrder = (event) => {
     event.preventDefault();
